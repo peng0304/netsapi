@@ -1,7 +1,7 @@
 
 #!/usr/bin/env python
 
-from distutils.core import setup
+from setuptools import setup, find_packages
 
 setup(name='netsapi',
       version='1.0',
@@ -9,5 +9,5 @@ setup(name='netsapi',
       author='Oliver E. Bent, Sekou L. Remy',
       author_email='n/a@gmail.com',
       url='https://github.com/slremy/netsapi',
-      py_modules=['location', 'environment', 'register', 'visualisation'],
+      packages=find_packages(),
 )
