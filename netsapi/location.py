@@ -16,12 +16,11 @@ def showLocations(baseuri):
     except Exception as e:
         raise e
 
-
 def getLocationId(location, name):
     for i in location:
         if i['names'] == name:
             locationId = i['locationId']
             print('locationId = ', locationId )
-        if locationId is None:
-            print("%s not found"%name)
+    if locationId is None:
+        print("%s not found"%name)
     return locationId
