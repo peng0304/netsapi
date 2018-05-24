@@ -27,7 +27,7 @@ def postAction(envID, action, baseuri):
     ITN_a = str(action[0]);
     IRS_a = str(action[1]);
     try:
-       ITN_time = str(action[1]*18+6);
+       ITN_time = "%d"%(action[1]*18+6);
     except:
        ITN_time = "1";
 
