@@ -24,5 +24,4 @@ def getLocationId(location, name):
             print('locationId = ', locationId )
         if locationId is None:
             print("%s not found"%name)
-
-return locationId
+    return locationId
