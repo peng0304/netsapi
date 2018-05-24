@@ -23,6 +23,7 @@ def initEnv(locationID, userID, baseuri):
 
 def postAction(envID, action, baseuri):
     actionUrl = '%s/api/action/v0/create'%baseuri
+    reward = -10^12
     ITN_a = str(action[0]);
     IRS_a = str(action[1]);
     try:
@@ -35,13 +36,13 @@ def postAction(envID, action, baseuri):
     try:
         response = requests.post(actionUrl, data = actions, headers = {'Content-Type': 'application/json', 'Accept': 'application/json'});
         data = response.json();
-        print(data);
-		# print(data['statusCode'])
+        #print(data);
+        # print(data['statusCode'])
         if data['statusCode'] == 400:
 			message = data['message']
-			print(message)
+			#print(message)
 			env = message.split()[17]
-			print(env)
+			#print(env)
 
 			reward = getReward(env, baseuri)
 
@@ -65,10 +66,10 @@ def getReward(envID, baseuri):
 		while getStatus(envID, baseuri) != "true":		
 			# if getStatus(envID, baseuri)  != "false":
 			# 	break
-			print("waiting", envID)
+			#print("waiting", envID)
 			time.sleep(pollingInterval_seconds);
 		reward = requests.post(rewardUrl, headers = {'Content-Type': 'application/json', 'Accept': 'application/json'})
-		print('Cost Per Daly Averted:',reward.text)
+		#print('Cost Per Daly Averted:',reward.text)
 
 	except Exception as e:
 		raise e
