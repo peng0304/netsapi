@@ -6,20 +6,20 @@ import re
 pollingInterval_seconds = 5
 
 def initEnv(locationID, userID, baseuri):
-	
-	environmentUrl = '%s/api/action/v0/initEnv'%baseuri
-	environmentInfo = json.dumps({"locationId": locationID, "userId": userID})
+    
+    environmentUrl = '%s/api/action/v0/initEnv'%baseuri
+    environmentInfo = json.dumps({"locationId": locationID, "userId": userID})
 
-	try:
-		response = requests.post(environmentUrl, data = environmentInfo, headers = {'Content-Type': 'application/json', 'Accept': 'application/json'})
-		data = response.json()
+    try:
+        response = requests.post(environmentUrl, data = environmentInfo, headers = {'Content-Type': 'application/json', 'Accept': 'application/json'})
+        data = response.json()
         # print(data)
-		envID = data['jsonNode']['response']['id']
+        envID = data['jsonNode']['response']['id']
 
-	except Exception as e:
-		raise e
+    except Exception as e:
+        raise e
 
-	return envID
+    return envID
 
 def postAction(envID, action, baseuri):
     actionUrl = '%s/api/action/v0/create'%baseuri
@@ -39,42 +39,42 @@ def postAction(envID, action, baseuri):
         #print(data);
         # print(data['statusCode'])
         if data['statusCode'] == 400:
-			message = data['message']
-			#print(message)
-			env = message.split()[17]
-			#print(env)
+            message = data['message']
+            #print(message)
+            env = message.split()[17]
+            #print(env)
 
-			reward = getReward(env, baseuri)
+            reward = getReward(env, baseuri)
 
         else:
-			reward = getReward(envID, baseuri)
+            reward = getReward(envID, baseuri)
 
-		# 	m = re.search(r'ID\\(\d+)\ to',message)
-		# 	print()
-		# else
-		# 	getReward(envID, baseuri)
+        #     m = re.search(r'ID\\(\d+)\ to',message)
+        #     print()
+        # else
+        #     getReward(envID, baseuri)
 
     except Exception as e:
-		raise e
+        raise e
 
     return reward
 
 def getReward(envID, baseuri):
-	rewardUrl = "%s/api/action/v0/reward/%s"%(baseuri,envID)
-	
-	try:
-		while getStatus(envID, baseuri) != "true":		
-			# if getStatus(envID, baseuri)  != "false":
-			# 	break
-			#print("waiting", envID)
-			time.sleep(pollingInterval_seconds);
-		reward = requests.post(rewardUrl, headers = {'Content-Type': 'application/json', 'Accept': 'application/json'})
-		#print('Cost Per Daly Averted:',reward.text)
+    rewardUrl = "%s/api/action/v0/reward/%s"%(baseuri,envID)
+    
+    try:
+        while getStatus(envID, baseuri) != "true":
+            # if getStatus(envID, baseuri)  != "false":
+            #     break
+            #print("waiting", envID)
+            time.sleep(pollingInterval_seconds);
+        reward = requests.post(rewardUrl, headers = {'Content-Type': 'application/json', 'Accept': 'application/json'})
+        #print('Cost Per Daly Averted:',reward.text)
 
-	except Exception as e:
-		raise e
+    except Exception as e:
+        raise e
 
-	return float(reward.text)
+    return float(reward.text)
 
 def getStatus(envID, baseuri):
     statusUrl = "%s/api/action/v0/status/%s"%(baseuri,envID)
