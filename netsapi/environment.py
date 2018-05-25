@@ -31,29 +31,23 @@ def postAction(envID, action, baseuri):
     except:
        ITN_time = "1";
 
-    actions = json.dumps({"actions":[{"componentId":"ITN","coverage":ITN_a, "time":ITN_time},{"componentId":"IRS","coverage":IRS_a}], "environmentId": envID});
+    actions = json.dumps({"actions":[{"componentId":"ITN","coverage":ITN_a, "time":"%5t"%ITN_time},{"componentId":"IRS","coverage":IRS_a}], "environmentId": envID});
 
     try:
         response = requests.post(actionUrl, data = actions, headers = {'Content-Type': 'application/json', 'Accept': 'application/json'});
         data = response.json();
         #print(data);
         # print(data['statusCode'])
-        if data['statusCode'] == 400:
+        if data['statusCode'] == 200:
+            reward = getReward(envID, baseuri)
+        else:
             message = data['message']
             #print(message)
-            env = message.split()[17]
-            #print(env)
-
-            reward = getReward(env, baseuri)
-
-        else:
-            reward = getReward(envID, baseuri)
-
-        #     m = re.search(r'ID\\(\d+)\ to',message)
-        #     print()
-        # else
-        #     getReward(envID, baseuri)
-
+            if message == "You have another task in queue with the same environment id":
+                env = message.split()[17]
+                reward = getReward(env, baseuri)
+            else:
+                raise RuntimeError(message)
     except Exception as e:
         raise e
 
@@ -70,11 +64,11 @@ def getReward(envID, baseuri):
             time.sleep(pollingInterval_seconds);
         reward = requests.post(rewardUrl, headers = {'Content-Type': 'application/json', 'Accept': 'application/json'})
         #print('Cost Per Daly Averted:',reward.text)
-
+        value = float(reward.text)
     except Exception as e:
         raise e
 
-    return float(reward.text)
+    return value
 
 def getStatus(envID, baseuri):
     statusUrl = "%s/api/action/v0/status/%s"%(baseuri,envID)
