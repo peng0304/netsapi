@@ -2,8 +2,9 @@ import requests
 import json
 import time
 import re
+import random
 
-pollingInterval_seconds = 5
+pollingInterval_seconds = 300
 
 def initEnv(locationID, userID, baseuri):
     
@@ -53,7 +54,7 @@ def postAction(envID, action, baseuri):
 
     return reward
 
-def getReward(envID, baseuri):
+def getReward(envID, baseuri, pollingInterval = pollingInterval_seconds ):
     rewardUrl = "%s/api/action/v0/reward/%s"%(baseuri,envID)
     
     try:
@@ -61,7 +62,7 @@ def getReward(envID, baseuri):
             # if getStatus(envID, baseuri)  != "false":
             #     break
             #print("waiting", envID)
-            time.sleep(pollingInterval_seconds);
+            time.sleep(random.uniform(pollingInterval/2,pollingInterval));
         reward = requests.post(rewardUrl, headers = {'Content-Type': 'application/json', 'Accept': 'application/json'})
         #print('Cost Per Daly Averted:',reward.text)
         value = float(reward.text)
