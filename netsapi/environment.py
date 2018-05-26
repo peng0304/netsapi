@@ -15,11 +15,14 @@ def initEnv(locationID, userID, baseuri):
         response = requests.post(environmentUrl, data = environmentInfo, headers = {'Content-Type': 'application/json', 'Accept': 'application/json'})
         data = response.json()
         # print(data)
-        envID = data['jsonNode']['response']['id']
-
+        
+        if data['statusCode'] == 200:
+            envID = data['jsonNode']['response']['id']
+        else:
+            message = data['message']
+            raise RuntimeError(message)
     except Exception as e:
         raise e
-
     return envID
 
 def postAction(envID, action, baseuri):
