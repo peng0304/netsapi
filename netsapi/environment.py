@@ -15,14 +15,17 @@ def initEnv(locationID, userID, baseuri):
         response = requests.post(environmentUrl, data = environmentInfo, headers = {'Content-Type': 'application/json', 'Accept': 'application/json'})
         data = response.json()
         # print(data)
-        envID = data['jsonNode']['response']['id']
-
+        
+        if data['statusCode'] == 200:
+            envID = data['jsonNode']['response']['id']
+        else:
+            message = data['message']
+            raise RuntimeError(message)
     except Exception as e:
         raise e
-
     return envID
 
-def postAction(envID, action, baseuri):
+def postAction(envID, action, baseuri, pollingInterval = pollingInterval_seconds):
     actionUrl = '%s/api/action/v0/create'%baseuri
     reward = -10^12
     ITN_a = str(action[0]);
@@ -46,7 +49,7 @@ def postAction(envID, action, baseuri):
             #print(message)
             if message == "You have another task in queue with the same environment id":
                 env = message.split()[17]
-                reward = getReward(env, baseuri)
+                reward = getReward(env, baseuri, pollingInterval)
             else:
                 raise RuntimeError(message)
     except Exception as e:
