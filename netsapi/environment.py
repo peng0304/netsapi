@@ -42,7 +42,7 @@ def postAction(envID, action, baseuri, pollingInterval = pollingInterval_seconds
         data = response.json();
         #print(data);
         # print(data['statusCode'])
-        if data['statusCode'] == 200:
+        if data['statusCode'] == 201:
             reward = getReward(envID, baseuri)
         else:
             message = data['message']
