@@ -43,7 +43,7 @@ def postAction(envID, action, baseuri, pollingInterval = pollingInterval_seconds
         #print(data);
         # print(data['statusCode'])
         if data['statusCode'] == 202:
-            reward = getReward(envID, baseuri)
+            reward = getReward(envID, baseuri, pollingInterval)
         else:
             message = data['message']
             #print(message)
