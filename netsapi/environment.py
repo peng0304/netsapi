@@ -59,14 +59,14 @@ def postAction(envID, action, baseuri, pollingInterval = pollingInterval_seconds
 
 def getReward(envID, baseuri, pollingInterval = pollingInterval_seconds ):
     rewardUrl = "%s/api/action/v0/reward/%s"%(baseuri,envID)
-    counter = 10;
+    counter = 20;
     try:
-        while getStatus(envID, baseuri) != "true" && counter > 0:
+        while getStatus(envID, baseuri) != "true" and counter > 0:
             counter -= 1
-            time.sleep(random.uniform(pollingInterval/2,pollingInterval));
+            time.sleep(pollingInterval+random.randint(0,60));
         reward = requests.post(rewardUrl, headers = {'Content-Type': 'application/json', 'Accept': 'application/json'})
         #print('Cost Per Daly Averted:',reward.text)
-        value = float(reward.text) if counter > 0 else np.NaN
+        value = float(reward.text) if counter > 0 else float('nan')
     except Exception as e:
         raise e
 
