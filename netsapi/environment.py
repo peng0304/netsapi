@@ -79,6 +79,6 @@ def getStatus(envID, baseuri):
         response = requests.get(statusUrl, headers = {'Accept': 'application/json'})
         ret = response.text
     except Exception as e:
-        ret = "false "+print(e)
+        ret = "false %s"%(e)
     
     return ret
