@@ -68,8 +68,8 @@ def getReward(envID, baseuri, pollingInterval = pollingInterval_seconds ):
         #print('Cost Per Daly Averted:',reward.text)
         value = float(reward.text) if counter > 0 else float('nan')
     except Exception as e:
-        raise e
-
+        print(e);
+        value = float('nan')
     return value
 
 def getStatus(envID, baseuri):
