@@ -53,8 +53,8 @@ def postAction(envID, action, baseuri, pollingInterval = pollingInterval_seconds
             else:
                 raise RuntimeError(message)
     except Exception as e:
-        raise e
-
+        print(e);
+        value = float('nan')
     return reward
 
 def getReward(envID, baseuri, pollingInterval = pollingInterval_seconds ):
