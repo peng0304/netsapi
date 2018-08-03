@@ -13,7 +13,7 @@ def Register(email,institution,names,baseuri):
         userID = data['userId']
     except Exception as e:
         if response is not None:
-            print response
+            print(response)
         raise e;
 
     return userID
