@@ -35,7 +35,7 @@ def postAction(envID, action, baseuri, pollingInterval = pollingInterval_seconds
     except:
        ITN_time = "1";
 
-    actions = json.dumps({"actions":[{"componentId":"ITN","coverage":ITN_a, "time":"%st"%ITN_time},{"componentId":"IRS","coverage":IRS_a}], "environmentId": envID});
+    actions = json.dumps({"actions":[{"modelName":"ITN","coverage":ITN_a, "time":"%st"%ITN_time},{"modelName":"IRS","coverage":IRS_a}], "environmentId": envID});
 
     try:
         response = requests.post(actionUrl, data = actions, headers = {'Content-Type': 'application/json', 'Accept': 'application/json'});
