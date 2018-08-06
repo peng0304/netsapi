@@ -47,7 +47,7 @@ def postAction(envID, action, baseuri, pollingInterval = pollingInterval_seconds
         else:
             message = data['message']
             #print(message)
-            if message == "You have another task in queue with the same environment id":
+            if "Another experiment has been run before" in message:
                 env = message.split()[17]
                 reward = getReward(env, baseuri, pollingInterval)
             else:
@@ -63,7 +63,7 @@ def postActionV1(expID, locationId, userId, action, baseuri, pollingInterval = p
     ITN_a = str(action[0]);
     IRS_a = str(action[1]);
     try:
-       ITN_time = "%d"%(action[2]*18+6);
+       ITN_time = "%d"%(action[2]+6);
     except:
        ITN_time = "1";
     actions = json.dumps({"actions":[{"coverage":ITN_a, "modelName":"ITN", "time":"%st"%ITN_time},{"coverage": IRS_a,"modelName": "IRS","time":"1t"}],"experimentid":expID, "locationId":locationId , "userId":userId });
@@ -90,9 +90,10 @@ def getReward(envID, baseuri, pollingInterval = pollingInterval_seconds ):
         while getStatus(envID, baseuri) != "true" and counter > 0:
             counter -= 1
             time.sleep(pollingInterval+random.randint(0,60));
-        reward = requests.post(rewardUrl, headers = {'Content-Type': 'application/json', 'Accept': 'application/json'})
+        if counter > 0:
+            reward = requests.post(rewardUrl, headers = {'Content-Type': 'application/json', 'Accept': 'application/json'})
         #print('Cost Per Daly Averted:',reward.text)
-        value = float(reward.text) if counter > 0 else float('nan')
+        value = float(reward.text)
     except Exception as e:
         print(e);
         value = float('nan')
@@ -106,9 +107,10 @@ def getRewardV1(expID, baseuri, pollingInterval = pollingInterval_seconds):
             print (expID, getStatusV1(expID, baseuri))
             counter -= 1
             time.sleep(pollingInterval+random.randint(0,60));
-        reward = requests.post(rewardUrl, headers = {'Content-Type': 'application/json', 'Accept': 'application/json'})
+        if counter > 0:
+            reward = requests.post(rewardUrl, headers = {'Content-Type': 'application/json', 'Accept': 'application/json'})
         #print('Cost Per Daly Averted:',reward.text)
-        value = float(reward.text) if counter > 0 else float('nan')
+        value = float(reward.text)
     except Exception as e:
         print(e);
         value = float('nan')
