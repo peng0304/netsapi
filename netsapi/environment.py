@@ -6,10 +6,13 @@ import random
 
 pollingInterval_seconds = 300
 
-def initEnv(locationID, userID, baseuri):
+def initEnv(locationID, userID, resolution,baseuri):
     
     environmentUrl = '%s/api/action/v0/initEnv'%baseuri
-    environmentInfo = json.dumps({"locationId": locationID, "userId": userID})
+    environmentInfo = json.dumps({"locationId": locationID, "userId": userID, "resolution": resolution})
+
+    if resolution not in ["low","medium","high","test"]:
+        raise RuntimeError("resolution is not test, low, medium, or high")
 
     try:
         response = requests.post(environmentUrl, data = environmentInfo, headers = {'Content-Type': 'application/json', 'Accept': 'application/json'})
