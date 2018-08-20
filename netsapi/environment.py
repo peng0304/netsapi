@@ -28,7 +28,7 @@ def initEnv(locationID, userID, resolution,baseuri):
         raise e
     return envID
 
-def postAction(envID, action, baseuri, pollingInterval = pollingInterval_seconds):
+def postAction(envID, action, baseuri, pollingInterval = pollingInterval_seconds, seed = random.randint(0,100)):
     actionUrl = '%s/api/action/v0/create'%baseuri
     reward = -10^12
     ITN_a = str(action[0]);
@@ -38,7 +38,7 @@ def postAction(envID, action, baseuri, pollingInterval = pollingInterval_seconds
     except:
        ITN_time = "1";
 
-    actions = json.dumps({"actions":[{"modelName":"ITN","coverage":ITN_a, "time":"%st"%ITN_time},{"modelName":"IRS","coverage":IRS_a}], "environmentId": envID});
+    actions = json.dumps({"actions":[{"modelName":"ITN","coverage":ITN_a, "time":"%st"%ITN_time},{"modelName":"IRS","coverage":IRS_a}], "environmentId": envID, "actionSeed": seed});
 
     try:
         response = requests.post(actionUrl, data = actions, headers = {'Content-Type': 'application/json', 'Accept': 'application/json'});
@@ -60,7 +60,7 @@ def postAction(envID, action, baseuri, pollingInterval = pollingInterval_seconds
         value = float('nan')
     return reward
 
-def postActionV1(expID, locationId, userId, action, baseuri, pollingInterval = pollingInterval_seconds):
+def postActionV1(expID, locationId, userId, action, baseuri, pollingInterval = pollingInterval_seconds, seed = random.randint(0,100)):
     actionUrl = '%s/api/v1/experiments/postJob'%baseuri
     reward = -10^12
     ITN_a = str(action[0]);
@@ -69,7 +69,7 @@ def postActionV1(expID, locationId, userId, action, baseuri, pollingInterval = p
        ITN_time = "%d"%(action[2]+6);
     except:
        ITN_time = "1";
-    actions = json.dumps({"actions":[{"coverage":ITN_a, "modelName":"ITN", "time":"%st"%ITN_time},{"coverage": IRS_a,"modelName": "IRS","time":"1t"}],"experimentid":expID, "locationId":locationId , "userId":userId });
+    actions = json.dumps({"actions":[{"coverage":ITN_a, "modelName":"ITN", "time":"%st"%ITN_time},{"coverage": IRS_a,"modelName": "IRS","time":"1t"}],"experimentid":expID, "locationId":locationId , "userId":userId, "actionSeed": seed });
     try:
         response = requests.post(actionUrl, data = actions, headers = {'Content-Type': 'application/json', 'Accept': 'application/json'});
         data = response.json();
