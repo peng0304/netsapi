@@ -34,9 +34,9 @@ def postAction(envID, action, baseuri, pollingInterval = pollingInterval_seconds
     ITN_a = str(action[0]);
     IRS_a = str(action[1]);
     try:
-       ITN_time = "%d"%(action[2]+6);
+       ITN_time = "%d"%(action[2]);
     except:
-       ITN_time = "1";
+       ITN_time = "730";
 
     actions = json.dumps({"actions":[{"modelName":"ITN","coverage":ITN_a, "time":"%st"%ITN_time},{"modelName":"IRS","coverage":IRS_a}], "environmentId": envID, "actionSeed": seed});
 
@@ -66,9 +66,9 @@ def postActionV1(expID, locationId, userId, action, baseuri, pollingInterval = p
     ITN_a = str(action[0]);
     IRS_a = str(action[1]);
     try:
-       ITN_time = "%d"%(action[2]+6);
+       ITN_time = "%d"%(action[2]);
     except:
-       ITN_time = "1";
+       ITN_time = "730";
     actions = json.dumps({"actions":[{"coverage":ITN_a, "modelName":"ITN", "time":"%st"%ITN_time},{"coverage": IRS_a,"modelName": "IRS","time":"1t"}],"experimentid":expID, "locationId":locationId , "userId":userId, "actionSeed": seed });
     try:
         response = requests.post(actionUrl, data = actions, headers = {'Content-Type': 'application/json', 'Accept': 'application/json'});
