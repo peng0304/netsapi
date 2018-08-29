@@ -69,7 +69,11 @@ def postActionV1(expID, locationId, userId, action, baseuri, pollingInterval = p
        ITN_time = "%d"%(action[2]);
     except:
        ITN_time = "730";
-    actions = json.dumps({"actions":[{"coverage":ITN_a, "modelName":"ITN", "time":"%st"%ITN_time},{"coverage": IRS_a,"modelName": "IRS","time":"1t"}],"experimentid":expID, "locationId":locationId , "userId":userId, "actionSeed": seed });
+    try:
+       IRS_time = "%d"%(action[3]);
+    except:
+       IRS_time = "730";
+    actions = json.dumps({"actions":[{"coverage":ITN_a, "modelName":"ITN", "time":"%st"%ITN_time},{"coverage": IRS_a,"modelName": "IRS","time":"%st"%IRS_time}],"experimentid":expID, "locationId":locationId , "userId":userId, "actionSeed": seed });
     try:
         response = requests.post(actionUrl, data = actions, headers = {'Content-Type': 'application/json', 'Accept': 'application/json'});
         data = response.json();
