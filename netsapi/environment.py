@@ -6,7 +6,7 @@ import random
 
 pollingInterval_seconds = 300
 
-def initEnv(locationID, userID, resolution,baseuri):
+def initEnv(locationID, userID, resolution, baseuri):
     
     environmentUrl = '%s/api/action/v0/initEnv'%baseuri
     environmentInfo = json.dumps({"locationId": locationID, "userId": userID, "resolution": resolution})
@@ -28,7 +28,7 @@ def initEnv(locationID, userID, resolution,baseuri):
         raise e
     return envID
 
-def postAction(envID, action, baseuri, pollingInterval = pollingInterval_seconds, seed = random.randint(0,100)):
+def postAction(envID, action, baseuri, nonBlocking = False, pollingInterval = pollingInterval_seconds, seed = random.randint(0,100)):
     actionUrl = '%s/api/action/v0/create'%baseuri
     reward = -10^12
     ITN_a = str(action[0]);
@@ -47,9 +47,10 @@ def postAction(envID, action, baseuri, pollingInterval = pollingInterval_seconds
     try:
         response = requests.post(actionUrl, data = actions, headers = {'Content-Type': 'application/json', 'Accept': 'application/json'});
         data = response.json();
-        #print(data);
-        # print(data['statusCode'])
-        if data['statusCode'] == 202:
+
+        if nonBlocking and data['statusCode'] == 202:
+            return True
+        elif data['statusCode'] == 202:
             reward = getReward(envID, baseuri, pollingInterval)
         else:
             message = data['message']
@@ -61,7 +62,7 @@ def postAction(envID, action, baseuri, pollingInterval = pollingInterval_seconds
                 raise RuntimeError(message)
     except Exception as e:
         print(e);
-        value = float('nan')
+        reward = float('nan')
     return reward
 
 def postActionV1(expID, locationId, userId, action, baseuri, pollingInterval = pollingInterval_seconds, seed = random.randint(0,100)):
