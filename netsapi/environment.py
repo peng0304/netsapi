@@ -20,7 +20,7 @@ def initEnv(locationID, userID, resolution, baseuri):
         # print(data)
         
         if data['statusCode'] == 200:
-            envID = data['jsonNode']['response']['id']
+            envID = data['data']['response']['id']
         else:
             message = data['message']
             raise RuntimeError(message)
