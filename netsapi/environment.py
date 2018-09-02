@@ -28,7 +28,7 @@ def initEnv(locationID, userID, resolution, baseuri):
         raise e
     return envID
 
-def postAction(envID, action, baseuri, nonBlocking = False, pollingInterval = pollingInterval_seconds, seed = random.randint(0,100)):
+def postAction(envID, action, baseuri, nonBlocking = False, pollingInterval = pollingInterval_seconds, seed = None):
     actionUrl = '%s/api/action/v0/create'%baseuri
     reward = -10^12
     ITN_a = str(action[0]);
@@ -41,6 +41,8 @@ def postAction(envID, action, baseuri, nonBlocking = False, pollingInterval = po
        IRS_time = "%d"%(action[3]);
     except:
        IRS_time = "730";
+    if seed is None:
+        seed = random.randint(0,100)
 
     actions = json.dumps({"actions":[{"modelName":"ITN","coverage":ITN_a, "time":"%s"%ITN_time},{"modelName":"IRS","coverage":IRS_a, "time":"%s"%IRS_time}], "environmentId": envID, "actionSeed": seed});
 
