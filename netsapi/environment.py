@@ -36,15 +36,19 @@ def postAction(envID, action, baseuri, nonBlocking = False, pollingInterval = po
     try:
        ITN_time = "%d"%(action[2]);
     except:
-       ITN_time = "730";
+       ITN_time = None;
     try:
        IRS_time = "%d"%(action[3]);
     except:
-       IRS_time = "730";
+       IRS_time = None;
     if seed is None:
         seed = random.randint(0,100)
 
-    actions = json.dumps({"actions":[{"modelName":"ITN","coverage":ITN_a, "time":"%s"%ITN_time},{"modelName":"IRS","coverage":IRS_a, "time":"%s"%IRS_time}], "environmentId": envID, "actionSeed": seed});
+    itnClause = {"modelName":"ITN","coverage":ITN_a } if ITN_time is None else {"modelName":"ITN","coverage":ITN_a, "time":"%s"%ITN_time}
+    irsClause = {"modelName":"IRS","coverage":IRS_a } if IRS_time is None else {"modelName":"IRS","coverage":IRS_a, "time":"%s"%IRS_time}
+
+    actions = json.dumps({"actions":[itnClause, irsClause],
+                         "environmentId": envID, "actionSeed": seed});
 
     try:
         response = requests.post(actionUrl, data = actions, headers = {'Content-Type': 'application/json', 'Accept': 'application/json'});
