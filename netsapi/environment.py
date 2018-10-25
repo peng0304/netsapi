@@ -28,6 +28,41 @@ def initEnv(locationID, userID, resolution, baseuri):
         raise e
     return envID
 
+def postCampaign(envID, campaign, baseuri, nonBlocking = False, pollingInterval = pollingInterval_seconds, seed = None):
+    actionUrl = '%s/api/action/v0/create'%baseuri
+    reward = -10^12
+    intervention_names=['ITN', 'IRS']
+
+    if seed is None:
+        seed = random.randint(0,100)
+
+    try:
+        interventionlist = []
+        for intervention in campaign[0]:
+            interventionlist.append( {"modelName":intervention_names[intervention[0]],"coverage":intervention[2], "time":"%s"%intervention[3]} )
+        data = json.dumps({"actions":interventionlist,
+                             "environmentId": envID, "actionSeed": seed});
+
+        response = requests.post(actionUrl, data = data, headers = {'Content-Type': 'application/json', 'Accept': 'application/json'});
+        responseData = response.json();
+
+        if nonBlocking and responseData['statusCode'] == 202:
+            return True
+        elif responseData['statusCode'] == 202:
+            reward = getReward(envID, baseuri, pollingInterval)
+        else:
+            message = responseData['message']
+            #print(message)
+            if "Another experiment has been run before" in message:
+                env = message.split()[17]
+                reward = getReward(env, baseuri, pollingInterval)
+            else:
+                raise RuntimeError(message)
+    except Exception as e:
+        print(e);
+        reward = float('nan')
+    return reward
+
 def postAction(envID, action, baseuri, nonBlocking = False, pollingInterval = pollingInterval_seconds, seed = None):
     actionUrl = '%s/api/action/v0/create'%baseuri
     reward = -10^12
