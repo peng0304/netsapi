@@ -10,14 +10,14 @@ def initEnv(locationID, userID, resolution, baseuri):
     
     environmentUrl = '%s/api/action/v0/initEnv'%baseuri
     environmentInfo = json.dumps({"locationId": locationID, "userId": userID, "resolution": resolution})
-
+    print(environmentInfo)
     if resolution not in ["low","medium","high","test"]:
         raise RuntimeError("resolution is not test, low, medium, or high")
 
     try:
         response = requests.post(environmentUrl, data = environmentInfo, headers = {'Content-Type': 'application/json', 'Accept': 'application/json'})
         data = response.json()
-        # print(data)
+        print(data)
         
         if data['statusCode'] == 200:
             envID = data['data']['response']['id']
