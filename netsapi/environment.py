@@ -135,7 +135,7 @@ def postActionV1(expID, locationId, userId, action, baseuri, pollingInterval = p
 
 def getReward(envID, baseuri, pollingInterval = pollingInterval_seconds ):
     rewardUrl = "%s/api/action/v0/reward/%s"%(baseuri,envID)
-    counter = 20;
+    counter = 10;
     try:
         while getStatus(envID, baseuri) != "true" and counter > 0:
             counter -= 1
