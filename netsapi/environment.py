@@ -17,7 +17,7 @@ def initEnv(locationID, userID, resolution, baseuri):
     try:
         response = requests.post(environmentUrl, data = environmentInfo, headers = {'Content-Type': 'application/json', 'Accept': 'application/json'})
         data = response.json()
-        print(data)
+        #print(data)
         
         if data['statusCode'] == 200:
             envID = data['data']['response']['id']
@@ -25,6 +25,7 @@ def initEnv(locationID, userID, resolution, baseuri):
             message = data['message']
             raise RuntimeError(message)
     except Exception as e:
+        print(e);
         raise e
     return envID
 
@@ -120,7 +121,7 @@ def postActionV1(expID, locationId, userId, action, baseuri, pollingInterval = p
     try:
         response = requests.post(actionUrl, data = actions, headers = {'Content-Type': 'application/json', 'Accept': 'application/json'});
         data = response.json();
-        print(data);
+        #print(data);
         # print(data['statusCode'])
         if data['statusCode'] == 202:
             reward = getRewardV1(data['jobId'], baseuri, pollingInterval)
@@ -154,7 +155,7 @@ def getRewardV1(expID, baseuri, pollingInterval = pollingInterval_seconds):
     counter = 20;
     try:
         while getStatusV1(expID, baseuri) != "true" and counter > 0:
-            print (expID, getStatusV1(expID, baseuri))
+            #print (expID, getStatusV1(expID, baseuri))
             counter -= 1
             time.sleep(pollingInterval+random.randint(0,60));
         if counter > 0:
