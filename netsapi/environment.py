@@ -10,7 +10,7 @@ def initEnv(locationID, userID, resolution, baseuri):
     
     environmentUrl = '%s/api/action/v0/initEnv'%baseuri
     environmentInfo = json.dumps({"locationId": locationID, "userId": userID, "resolution": resolution})
-    print(environmentInfo)
+    #print(environmentInfo)
     if resolution not in ["low","medium","high","test"]:
         raise RuntimeError("resolution is not test, low, medium, or high")
 
