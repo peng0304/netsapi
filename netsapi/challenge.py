@@ -1,3 +1,6 @@
+from netsapi.location import *
+from netsapi.environment import *
+
 import os
 from sys import exit, exc_info, argv
 from multiprocessing import Pool, current_process
