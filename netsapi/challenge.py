@@ -3,6 +3,11 @@ from sys import exit, exc_info, argv
 from multiprocessing import Pool, current_process
 import numpy as np
 
+resolution, timeout, realworkercount = "test", 10, 100
+baseuri = "https://nlmodelflask.eu-gb.mybluemix.net"
+locationId = "abcd123"
+userId = "IndabaXKenyaUser"
+
 def individual_get_score(action):
     name_s=current_process().name
     id = np.mod(int(name_s.split("-")[1]),realworkercount)
