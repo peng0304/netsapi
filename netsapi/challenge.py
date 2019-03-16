@@ -6,18 +6,21 @@ from sys import exit, exc_info, argv
 from multiprocessing import Pool, current_process
 import numpy as np
 
-resolution, timeout, realworkercount = "test", 10, 100
+resolution, timeout, realworkercount = "test", 0, 100
 baseuri = "https://nlmodelflask.eu-gb.mybluemix.net"
 locationId = "abcd123"
 userId = "IndabaXKenyaUser"
 
 def individual_get_score(action):
     name_s=current_process().name
-    id = np.mod(int(name_s.split("-")[1]),realworkercount)
+    if  "-" in name_s:
+        id = np.mod(int(name_s.split("-")[1]),realworkercount)
+    else:
+        id = -1
 
     try:
-        envId = initEnv(locationId, userId, resolution,baseuri)
-        reward = postAction(envId, action%1, baseuri)
+        envId = initEnv(locationId, userId, resolution, baseuri)
+        reward = postAction(envId, action%1, baseuri, False, timeout)
 #         print(id, action%1, reward)
 
     except:
@@ -80,21 +83,6 @@ def map(function, data):
     else:
         result = function(data)
     return result
-
-def evaluateNonBlocking(data, coverage):
-    try:
-        completed = []
-        envs = map(postActionWrapper, data)
-        while len(completed) < coverage*data.shape[1]:
-            statii = map(getStatusWrapper, np.array(envs).reshape(-1,1))
-            completed = [i for i,v in enumerate(statii) if v == 'true']
-            #print(len(completed), envs)
-        rewardz = map(getRewardWrapper,np.array(envs).reshape(-1,1)[completed])
-        val = data[completed], np.array(rewardz)
-    except:
-        print(exc_info(),data)
-        val = None, None
-    return val
 
 def evaluate(data):
     if len(data.shape) == 2: #vector of chromosomes
