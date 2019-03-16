@@ -19,7 +19,7 @@ def ResponseSurface(rewards):
     #Normalise
     Z = Z - np.amin(Z) + 0.01 #set max at zero
 
-    Z = np.log(Z)
+#     Z = np.log(Z)
 
 
 
