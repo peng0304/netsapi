@@ -17,7 +17,7 @@ def ResponseSurface(rewards):
     Z = Z.reshape(-1,1)
 
     #Normalise
-    Z = Z - np.amin(Z) + 0.01 #set max at zero
+#     Z = Z - np.amin(Z) + 0.01 #set max at zero
 
 #     Z = np.log(Z)
 
@@ -31,7 +31,7 @@ def ResponseSurface(rewards):
 
     ax.set_xlabel('ITN_coverage')
     ax.set_ylabel('IRS_coverage')
-    ax.set_zlabel('Normalised Reward')
+    ax.set_zlabel('Reward')
     #
     #Fitting GP
     # k = gpflow.kernels.Matern52(2, lengthscales=0.2)
