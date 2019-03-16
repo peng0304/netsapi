@@ -27,7 +27,7 @@ def individual_get_score(action):
         print(exc_info(),action)
         reward = None;
     
-    return reward
+    return -reward
 
 def postActionWrapper(action):
     name_s=current_process().name
