@@ -190,3 +190,38 @@ def getStatusV1(expID, baseuri):
         ret = "false %s"%(e)
     
     return ret
+
+class TestEnvironment():
+    def __init__(self, userID, baseuri, locationId, resolution = "test", timeout = 0, realworkercount = 1):
+        
+        self._resolution = resolution
+        self._timeout = timeout
+        self._realworkercount = realworkercount
+
+        self.policyDimension = 2
+        self._baseuri =  baseuri
+        self._locationId = locationId
+        self.userId = userID
+    
+    def _individual_get_reward(self, action):
+        from sys import exc_info
+        try:
+            envId = initEnv(self._locationId, self.userId, self._resolution, self._baseuri)
+            reward = postAction(envId, action%1, self._baseuri, False, self._timeout)
+        except:
+            print(exc_info(),action)
+            reward = None;
+        
+        return -reward
+
+    def evaluateReward(self, data, coverage = 1):
+        from multiprocessing import Pool
+        if len(data.shape) == 2: #vector of chromosomes
+            pool = Pool(self._realworkercount)
+            result = pool.map(self._individual_get_reward, data)
+            pool.close()
+            pool.join()
+        else:
+            result = _individual_get_score(data)
+        return result
+
