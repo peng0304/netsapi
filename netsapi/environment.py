@@ -203,24 +203,42 @@ class TestEnvironment():
         self._locationId = locationId
         self.userId = userID
     
-    def _individual_get_reward(self, action):
-        from sys import exc_info
+    def simplePostAction(self, action):
+        actionUrl = '%s/api/action/v0/create'%self._baseuri
+        ITN_a = str(action[0]);
+        IRS_a = str(action[1]);
         try:
-            reward = initEnv(self._locationId, self.userId, self._resolution, self._baseuri)
+           ITN_time = "%d"%(action[2]);
         except:
-            print(exc_info(),action)
-            reward = None;
-        
-        return -reward
+           ITN_time = None;
+        try:
+           IRS_time = "%d"%(action[3]);
+        except:
+           IRS_time = None;
+        seed = random.randint(0,100)
+        envID = "none"
+
+        itnClause = {"modelName":"ITN","coverage":ITN_a } if ITN_time is None else {"modelName":"ITN","coverage":ITN_a, "time":"%s"%ITN_time}
+        irsClause = {"modelName":"IRS","coverage":IRS_a } if IRS_time is None else {"modelName":"IRS","coverage":IRS_a, "time":"%s"%IRS_time}
+
+        actions = json.dumps({"actions":[itnClause, irsClause],
+                             "environmentId": envID, "actionSeed": seed});
+        try:
+            response = requests.post(actionUrl, data = actions, headers = {'Content-Type': 'application/json', 'Accept': 'application/json'});
+            data = response.json();
+            reward = -float(data['data'])
+        except Exception as e:
+            print(e);
+            reward = float('nan')
+        return reward
 
     def evaluateReward(self, data, coverage = 1):
         from multiprocessing import Pool
         if len(data.shape) == 2: #vector of chromosomes
             pool = Pool(self._realworkercount)
-            result = pool.map(self._individual_get_reward, data)
+            result = pool.map(self.simplePostAction, data)
             pool.close()
             pool.join()
         else:
             result = _individual_get_score(data)
         return result
-
