@@ -206,8 +206,7 @@ class TestEnvironment():
     def _individual_get_reward(self, action):
         from sys import exc_info
         try:
-            envId = initEnv(self._locationId, self.userId, self._resolution, self._baseuri)
-            reward = postAction(envId, action%1, self._baseuri, False, self._timeout)
+            reward = initEnv(self._locationId, self.userId, self._resolution, self._baseuri)
         except:
             print(exc_info(),action)
             reward = None;
