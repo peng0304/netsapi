@@ -192,7 +192,7 @@ def getStatusV1(expID, baseuri):
     return ret
 
 class TestEnvironment():
-    def __init__(self, userID, baseuri, locationId, resolution = "test", timeout = 0, realworkercount = 1):
+    def __init__(self, userID, baseuri, locationId, resolution = "test", timeout = 0, realworkercount = 1, experimentCount = 256):
         
         self._resolution = resolution
         self._timeout = timeout
@@ -202,7 +202,8 @@ class TestEnvironment():
         self._baseuri =  baseuri
         self._locationId = locationId
         self.userId = userID
-    
+        self.experimentsRemaining = experimentCount
+        
     def simplePostAction(self, action):
         actionUrl = '%s/api/action/v0/create'%self._baseuri
         ITN_a = str(action[0]);
@@ -233,12 +234,20 @@ class TestEnvironment():
         return reward
 
     def evaluateReward(self, data, coverage = 1):
+        print(self.experimentsRemaining, " exps left")
+        if self.experimentsRemaining <= 0:
+            raise ValueError('You have exceeded the permitted number of experiments')
+        if type(soln) is not np.ndarray:
+            raise ValueError('argument should be a numpy array')
+        
         from multiprocessing import Pool
-        if len(data.shape) == 2: #vector of chromosomes
+        if len(data.shape) == 2: #array of policies
+            self.experimentsRemaining -= data.shape[0]
             pool = Pool(self._realworkercount)
             result = pool.map(self.simplePostAction, data)
             pool.close()
             pool.join()
         else:
-            result = _individual_get_score(data)
+            result = self.simplePostAction(data)
+            self.experimentsRemaining -= 1
         return result
