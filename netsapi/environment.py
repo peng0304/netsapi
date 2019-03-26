@@ -191,7 +191,7 @@ def getStatusV1(expID, baseuri):
     
     return ret
 
-class TestEnvironment():
+class ChallengeEnvironment():
     def __init__(self, userID, baseuri, locationId, resolution = "test", timeout = 0, realworkercount = 1, experimentCount = 256):
         
         self._resolution = resolution
