@@ -234,10 +234,11 @@ class ChallengeEnvironment():
         return reward
 
     def evaluateReward(self, data, coverage = 1):
+        from numpy import ndarray
         print(self.experimentsRemaining, " exps left")
         if self.experimentsRemaining <= 0:
             raise ValueError('You have exceeded the permitted number of experiments')
-        if type(soln) is not np.ndarray:
+        if type(data) is not ndarray:
             raise ValueError('argument should be a numpy array')
         
         from multiprocessing import Pool
