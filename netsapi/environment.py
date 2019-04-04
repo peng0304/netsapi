@@ -202,7 +202,10 @@ class ChallengeEnvironment():
         self._baseuri =  baseuri
         self._locationId = locationId
         self.userId = userID
+        self._experimentCount = experimentCount
         self.experimentsRemaining = experimentCount
+    def reset(self):
+        self.experimentsRemaining = self._experimentCount
         
     def simplePostAction(self, action):
         actionUrl = '%s/api/action/v0/create'%self._baseuri
