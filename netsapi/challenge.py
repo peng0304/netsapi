@@ -6,7 +6,7 @@ import json
 import requests
 
 class ChallengeEnvironment():
-    def __init__(self, experimentCount = 256, userID = "KDDChallengeUser", baseuri = "https://nlmodelflask.eu-gb.mybluemix.net", locationId = "abcd123", resolution = "test", timeout = 0, realworkercount = 1):
+    def __init__(self, experimentCount = 1000, userID = "KDDChallengeUser", baseuri = "https://nlmodelflask.eu-gb.mybluemix.net", locationId = "abcd123", resolution = "test", timeout = 0, realworkercount = 1):
         
         self._resolution = resolution
         self._timeout = timeout
@@ -52,9 +52,9 @@ class ChallengeEnvironment():
 
     def evaluateReward(self, data, coverage = 1):
         from numpy import ndarray
-        print(self.experimentsRemaining, " exps left")
+        print(self.experimentsRemaining, " Evaluations Remaining")
         if self.experimentsRemaining <= 0:
-            raise ValueError('You have exceeded the permitted number of experiments')
+            raise ValueError('You have exceeded the permitted number of Evaluations')
         if type(data) is not ndarray:
             raise ValueError('argument should be a numpy array')
         
