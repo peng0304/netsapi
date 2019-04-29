@@ -69,3 +69,93 @@ class ChallengeEnvironment():
             result = self.simplePostAction(data)
             self.experimentsRemaining -= 1
         return result
+
+class ChallengeSeqDecEnvironment():
+    def __init__(self, experimentCount = 1000, userID = "KDDChallengeUser", baseuri = "https://seqenvironment.eu-gb.mybluemix.net", locationId = "abcd123", resolution = "test", timeout = 0, realworkercount = 1):
+
+        self._resolution = resolution
+        self._timeout = timeout
+        self._realworkercount = realworkercount
+
+        self.actionDimension = 2
+        self.policyDimension = 5
+        self._baseuri =  baseuri
+        self._locationId = locationId
+        self.userId = userID
+        self._experimentCount = experimentCount
+        self.experimentsRemaining = self._experimentCount 
+        self.reset()
+        self.action = []
+        self.policy = {}
+
+    def reset(self):
+        self.state = 1
+        self.done = False
+        self.action = []
+        self.policy = {}
+
+    def simplePostAction(self, action):
+        rewardUrl = '%s/evaluate/action/'%self._baseuri
+
+        try:
+            print(action)
+            extended_action = {}
+            extended_action['action']=action
+            extended_action['old'] = self.action
+            extended_action['state'] = self.state
+            print(extended_action)
+            response = requests.post(rewardUrl, data = json.dumps(extended_action), headers = {'Content-Type': 'application/json', 'Accept': 'application/json'});
+            data = response.json();
+            reward = -float(data['data'])
+        except Exception as e:
+            print(e);
+            reward = float('nan')
+        return reward
+
+    def simplePostPolicy(self, policy):
+        rewardUrl = '%s/evaluate/policy/'%self._baseuri
+
+        try:
+            print(policy)
+            response = requests.post(rewardUrl, data = json.dumps(policy), headers = {'Content-Type': 'application/json', 'Accept': 'application/json'});
+            data = response.json();
+            reward = -float(data['data'])
+        except Exception as e:
+            print(e);
+            reward = float('nan')
+        return reward
+
+    def evaluateAction(self, action):
+        reward = float("nan")
+        print(self.experimentsRemaining, " Evaluations Remaining")
+        if self.experimentsRemaining <= 0:
+            raise ValueError('You have exceeded the permitted number of Evaluations')
+        self.experimentsRemaining -= 1
+        
+        if ~self.done and self.state <= self.policyDimension:
+            reward = self.simplePostAction(action)
+            self.action = action
+            self.state += 1
+
+        if self.state > self.policyDimension: self.done = True
+        return self.state, reward, self.done, {}
+
+    def evaluatePolicy(self, data, coverage = 1):
+        print(self.experimentsRemaining, " Evaluations Remaining")
+        if self.experimentsRemaining <= 0:
+            raise ValueError('You have exceeded the permitted number of Evaluations')
+
+        from multiprocessing import Pool
+        if type(data) is list and all([type(i) is dict for i in data]): #list of policies
+            self.experimentsRemaining -= len(data)*5
+            pool = Pool(self._realworkercount)
+            result = pool.map(self.simplePostPolicy, data)
+            pool.close()
+            pool.join()
+        elif type(data) is dict:
+            result = self.simplePostPolicy(data)
+            self.experimentsRemaining -= 1*5
+        else:
+            raise ValueError('argument should be a policy (dictionary) or a list of policies')
+
+        return result
