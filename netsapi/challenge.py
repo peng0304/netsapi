@@ -72,7 +72,7 @@ class ChallengeEnvironment():
         return result
 
 class ChallengeSeqDecEnvironment():
-    def __init__(self, experimentCount = 1000, userID = "KDDChallengeUser", baseuri = "https://seqenvironment.eu-gb.mybluemix.net", locationId = "abcd123", resolution = "test", timeout = 0, realworkercount = 1):
+    def __init__(self, experimentCount = 1005, userID = "KDDChallengeUser", baseuri = "https://seqenvironment.eu-gb.mybluemix.net", locationId = "abcd123", resolution = "test", timeout = 0, realworkercount = 1):
 
         self._resolution = resolution
         self._timeout = timeout
@@ -99,12 +99,12 @@ class ChallengeSeqDecEnvironment():
         rewardUrl = '%s/evaluate/action/'%self._baseuri
 
         try:
-            print(action)
+            #print(action)
             extended_action = {}
             extended_action['action']=action
             extended_action['old'] = self.action
             extended_action['state'] = self.state
-            print(extended_action)
+            #print(extended_action)
             response = requests.post(rewardUrl, data = json.dumps(extended_action), headers = {'Content-Type': 'application/json', 'Accept': 'application/json'});
             data = response.json();
             reward = -float(data['data'])
@@ -117,7 +117,7 @@ class ChallengeSeqDecEnvironment():
         rewardUrl = '%s/evaluate/policy/'%self._baseuri
 
         try:
-            print(policy)
+            #print(policy)
             response = requests.post(rewardUrl, data = json.dumps(policy), headers = {'Content-Type': 'application/json', 'Accept': 'application/json'});
             data = response.json();
             reward = -float(data['data'])
@@ -169,3 +169,39 @@ class ChallengeSeqDecEnvironment():
             raise ValueError('argument should be a policy (dictionary) or a list of policies')
 
         return result
+
+class EvaluateChallengeSubmission():
+    def __init__(self, environment, agent, episode_number=200, filename = 'my_submission.csv'):
+        self.environment = environment
+        self.agent = agent
+        self.episode_number = episode_number
+        self.reset();
+        print(self.scoringFunction())
+        self.create_submissions(filename)
+
+    def reset(self):
+        self.policies = []
+        self.rewards = []
+        self.run = []
+
+    def scoringFunction(self):
+        #Should be parallized
+        for ii in range(10):
+            e = self.environment()
+            a = self.agent(e, self.episode_number);
+            finalpolicy, episodicreward = a.generate()
+            self.policies.append(finalpolicy)
+            self.rewards.append(episodicreward)
+            self.run.append(ii)
+        
+        return np.mean(self.rewards)/np.std(self.rewards)
+
+    def create_submissions(self, filename = 'my_submission.csv'):
+        labels = ['run', 'reward', 'policy']
+        rewards = np.array(self.rewards)
+        data = { 'run': self.run,
+            'rewards': rewards,
+                'policy': self.policies,
+                }
+        submission_file = pd.DataFrame(data)
+        submission_file.to_csv(filename, index=False)
