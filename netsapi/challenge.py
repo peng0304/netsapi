@@ -4,6 +4,8 @@ from multiprocessing import Pool, current_process
 import random
 import json
 import requests
+import pandas as pd
+import numpy as np
 
 class ChallengeEnvironment():
     def __init__(self, experimentCount = 1000, userID = "KDDChallengeUser", baseuri = "https://nlmodelflask.eu-gb.mybluemix.net", locationId = "abcd123", resolution = "test", timeout = 0, realworkercount = 1):
