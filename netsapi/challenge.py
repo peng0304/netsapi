@@ -196,7 +196,7 @@ class EvaluateChallengeSubmission():
             self.rewards.append(episodicreward)
             self.run.append(ii)
         
-        return np.mean(self.rewards)/np.std(self.rewards)
+        return np.median(self.rewards)
 
     def create_submissions(self, filename = 'my_submission.csv'):
         labels = ['run', 'reward', 'policy']
