@@ -173,7 +173,7 @@ class ChallengeSeqDecEnvironment():
         return result
 
 class EvaluateChallengeSubmission():
-    def __init__(self, environment, agent, episode_number=200, filename = 'my_submission.csv'):
+    def __init__(self, environment, agent, filename = 'my_submission.csv', episode_number = 20):
         self.environment = environment
         self.agent = agent
         self.episode_number = episode_number
@@ -190,7 +190,7 @@ class EvaluateChallengeSubmission():
         #Should be parallized
         for ii in range(10):
             e = self.environment()
-            a = self.agent(e, self.episode_number);
+            a = self.agent(e);
             finalpolicy, episodicreward = a.generate()
             self.policies.append(finalpolicy)
             self.rewards.append(episodicreward)
