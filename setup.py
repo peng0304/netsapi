@@ -4,7 +4,7 @@
 from setuptools import setup, find_packages
 
 setup(name='netsapi',
-      version='1.0',
+      version='1.1',
       description='Python front end for API',
       author='Oliver E. Bent, Sekou L. Remy',
       author_email='n/a@gmail.com',
