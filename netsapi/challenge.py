@@ -8,7 +8,7 @@ import pandas as pd
 import numpy as np
 
 class ChallengeEnvironment():
-    def __init__(self, experimentCount = 1000, userID = "KDDChallengeUser", baseuri = "https://nlmodelflask.eu-gb.mybluemix.net", locationId = "abcd123", resolution = "test", timeout = 0, realworkercount = 1):
+    def __init__(self, experimentCount = 100, userID = "KDDChallengeUser", baseuri = "https://nlmodelflask.eu-gb.mybluemix.net", locationId = "abcd123", resolution = "test", timeout = 0, realworkercount = 1):
         
         self._resolution = resolution
         self._timeout = timeout
@@ -74,7 +74,7 @@ class ChallengeEnvironment():
         return result
 
 class ChallengeSeqDecEnvironment():
-    def __init__(self, experimentCount = 1005, userID = "KDDChallengeUser", baseuri = "https://seqenvironment.eu-gb.mybluemix.net", locationId = "abcd123", resolution = "test", timeout = 0, realworkercount = 1):
+    def __init__(self, experimentCount = 105, userID = "KDDChallengeUser", baseuri = "https://seqenvironment.eu-gb.mybluemix.net", locationId = "abcd123", resolution = "test", timeout = 0, realworkercount = 1):
 
         self._resolution = resolution
         self._timeout = timeout
