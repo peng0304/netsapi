@@ -154,22 +154,24 @@ class ChallengeSeqDecEnvironment():
 
     def evaluatePolicy(self, data, coverage = 1):
         print(self.experimentsRemaining, " Evaluations Remaining")
-        if self.experimentsRemaining <= 0:
-            raise ValueError('You have exceeded the permitted number of Evaluations')
 
         from multiprocessing import Pool
         if type(data) is list and all([type(i) is dict for i in data]): #list of policies
             self.experimentsRemaining -= len(data)*5
+            if self.experimentsRemaining < 0:
+                raise ValueError('Request would exceed the permitted number of Evaluations')
             pool = Pool(self._realworkercount)
             result = pool.map(self._simplePostPolicy, data)
             pool.close()
             pool.join()
         elif type(data) is dict:
-            result = self._simplePostPolicy(data)
             self.experimentsRemaining -= 1*5
+            if self.experimentsRemaining < 0:
+                raise ValueError('Request would exceed the permitted number of Evaluations')
+            result = self._simplePostPolicy(data)
         else:
             raise ValueError('argument should be a policy (dictionary) or a list of policies')
-
+     
         return result
 
 class EvaluateChallengeSubmission():
